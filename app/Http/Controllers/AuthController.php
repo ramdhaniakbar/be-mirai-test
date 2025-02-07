@@ -26,9 +26,6 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // generate token expires in 7 days
-        $token = $user->createToken('auth_token');
-
         // user activity log
         UserActivity::create([
             'user_id' => $user->id,
@@ -38,12 +35,7 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'User registered successfully',
-            'data' => [
-                'user' => $user,
-                'access_token' => $token->plainTextToken,
-                'token_type' => 'Bearer',
-                'expires_at' => Carbon::now()->addDays(7)->toDateTimeString(),
-            ]
+            'data' => $user
         ], 201);
     }
 

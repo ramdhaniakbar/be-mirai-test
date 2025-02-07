@@ -9,6 +9,8 @@ class Diary extends Model
 {
     use SoftDeletes;
 
+    public $table = 'diaries';
+
     protected $fillable = [
         'user_id',
         'title',

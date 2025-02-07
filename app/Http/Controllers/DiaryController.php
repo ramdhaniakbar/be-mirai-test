@@ -43,7 +43,7 @@ class DiaryController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'image|mimes:png,jpg',
+            'image' => 'required|image|mimes:png,jpg',
             'date' => 'required|date',
         ]);
 
@@ -196,7 +196,7 @@ class DiaryController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Task deleted successfully',
+            'message' => 'Diary deleted successfully',
         ]);
     }
 }
