@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Diary;
 use App\Models\UserActivity;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,7 +14,7 @@ class UserActivityController extends Controller
                             ->latest()
                             ->take(10)
                             ->get();
-        $total_user_activity = UserActivity::count();
+        $total_diary = Diary::count();
 
         $user_activities->transform(function ($activity) {
             $activity->user->image_url = $activity->user->photo
@@ -27,7 +28,7 @@ class UserActivityController extends Controller
             'message' => 'User activity list',
             'data' => [
                 'data' => $user_activities,
-                'total_user_activity' => $total_user_activity
+                'total_diary' => $total_diary
             ]
         ], 200);
     }
