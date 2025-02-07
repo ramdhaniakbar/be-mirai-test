@@ -37,7 +37,6 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
-            'phone' => 'nullable|string|max:20',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|in:male,female,other'
@@ -51,10 +50,8 @@ class UserController extends Controller
         $user->email = $request->email;
         
         // update additional columns
-        $user->phone = $request->phone;
         $user->date_of_birth = $request->date_of_birth;
         $user->gender = $request->gender;
-        $user->address = $request->address;
 
         if ($request->old_password || $request->password) {
             $request->validate([
