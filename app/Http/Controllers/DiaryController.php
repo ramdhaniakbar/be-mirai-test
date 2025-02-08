@@ -202,6 +202,10 @@ class DiaryController extends Controller
             ], 404);
         }
 
+        if ($diary->image && Storage::disk('public')->exists('images/diary/' . $diary->image)) {
+            Storage::disk('public')->delete('images/diary/' . $diary->image);
+        }
+
         // delete diary
         $diary->delete();
 
