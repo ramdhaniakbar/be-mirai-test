@@ -37,7 +37,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            // 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|in:male,female,other'
         ]);
@@ -86,6 +86,12 @@ class UserController extends Controller
             $photo_name = Str::random(10) . '.' . $photo->getClientOriginalExtension();
             $photo->storeAs('images/user', $photo_name, 'public');
             $user->photo = $photo_name;
+        } else if (!$request->photo) {
+            if ($user->photo && Storage::disk('public')->exists('images/user/' . $user->photo)) {
+                // delete old photo
+                Storage::disk('public')->delete('images/user/' . $user->photo);
+            }
+            $user->photo = NULL;
         }
 
         $user->save();
@@ -95,6 +101,10 @@ class UserController extends Controller
             'user_id' => $user->id,
             'activities' => $user->name . ' has updated their profile',
         ]);
+
+        $user->image_url = $user->photo
+            ? url('storage/images/user/' . $user->photo)
+            : url('storage/images/user/account-default.png');
 
         return response()->json([
             'status' => 'success',

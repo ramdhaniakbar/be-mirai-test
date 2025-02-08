@@ -57,6 +57,10 @@ class AuthController extends Controller
             return response()->json(['message' => 'Password is incorrect'], 401);
         }
 
+        $user->image_url = $user->photo
+            ? url('storage/images/user/' . $user->photo)
+            : url('storage/images/user/account-default.png');
+
         // generate token expires in 7 days
         $token = $user->createToken('auth_token');
 
