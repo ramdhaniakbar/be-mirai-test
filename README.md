@@ -33,6 +33,10 @@ $ sesuaikan .env dengan configuration anda
 $ php artisan key:generate
 ```
 
+```bash
+$ php artisan storage:link
+```
+
 ## Running the migration
 ```bash
 $ php artisan migrate
