@@ -20,6 +20,7 @@ class DiaryController extends Controller
 
         $diaries = Diary::with(['user:id,name,photo'])
                 ->where('user_id', $user->id)
+                ->latest()
                 ->paginate(10);
 
             $diaries->getCollection()->transform(function ($diary) {
@@ -110,6 +111,8 @@ class DiaryController extends Controller
             ], 404);
         }
 
+        $diary->image_url =  url('storage/images/diary/' . $diary->image);
+
         return response()->json([
             'status' => 'error',
             'message' => 'Diary detail',
@@ -133,7 +136,6 @@ class DiaryController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'image|mimes:png,jpg',
             'date' => 'required|date',
         ]);
 
@@ -153,6 +155,9 @@ class DiaryController extends Controller
         $diary->date = $request->date;
 
         if ($request->hasFile('image')) {
+            $request->validate([
+                'image' => 'image|mimes:png,jpg',
+            ]);
             // Delete old image
             if ($diary->image && Storage::disk('public')->exists('images/diary/' . $diary->image)) {
                 Storage::disk('public')->delete('images/diary/' . $diary->image);
