@@ -18,7 +18,19 @@ class DiaryController extends Controller
     {
         $user = Auth::user();
 
-        $diaries = Diary::where('user_id', $user->id)->paginate(10);
+        $diaries = Diary::with(['user:id,name,photo'])
+                ->where('user_id', $user->id)
+                ->paginate(10);
+
+            $diaries->getCollection()->transform(function ($diary) {
+                $diary->image = asset('storage/images/diary/' . $diary->image);
+
+                $diary->user->photo = $diary->user->photo && !str_starts_with($diary->user->photo, 'http')
+                    ? asset('storage/images/user/' . $diary->user->photo) 
+                    : asset('storage/images/user/account-default.png');
+
+                return $diary;
+            });
 
         return response()->json([
             'status' => 'success',
